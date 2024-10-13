@@ -1,0 +1,71 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Formulaire d'inscription -->
+    <main>
+        <h1>Inscription</h1>
+        <form id="register-form">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" required>
+
+            <label for="confirm-password">Confirmer le mot de passe</label>
+            <input type="password" id="confirm-password" required>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+        <p id="message"></p>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('register-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                const message = document.getElementById('message');
+
+                if (password !== confirmPassword) {
+                    message.textContent = 'Les mots de passe ne correspondent pas.';
+                    return;
+                }
+
+                const success = register(username, email, password);
+                if (success) {
+                    message.textContent = "Inscription réussie. Redirection vers l'accueil...";
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    message.textContent = 'Un utilisateur avec cet email existe déjà.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

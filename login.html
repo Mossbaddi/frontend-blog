@@ -1,0 +1,58 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Formulaire de connexion -->
+    <main>
+        <h1>Connexion</h1>
+        <form id="login-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Se connecter</button>
+        </form>
+        <p id="message"></p>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                const message = document.getElementById('message');
+
+                const success = login(email, password);
+                if (success) {
+                    message.textContent = "Connexion réussie. Redirection vers l'accueil...";
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    message.textContent = 'Email ou mot de passe incorrect.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

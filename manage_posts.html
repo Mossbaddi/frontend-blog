@@ -1,0 +1,84 @@
+<!-- manage_posts.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Postes - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Liste des postes de l'utilisateur -->
+    <main>
+        <h1>Mes Postes</h1>
+        <section id="user-posts-list">
+            <!-- Les postes seront affichés ici -->
+        </section>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/posts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!currentUserId) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const postsList = document.getElementById('user-posts-list');
+            const userPosts = posts.filter(post => post.authorId === parseInt(currentUserId));
+
+            if (userPosts.length === 0) {
+                postsList.innerHTML = "<p>Vous n'avez pas encore créé de postes.</p>";
+            } else {
+                userPosts.forEach(post => {
+                    const postElement = document.createElement('article');
+                    postElement.className = 'post';
+
+                    const title = document.createElement('h2');
+                    title.textContent = post.title;
+
+                    const content = document.createElement('p');
+                    content.textContent = post.content.substring(0, 100) + '...';
+
+                    const actions = document.createElement('div');
+                    actions.className = 'post-actions';
+
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Modifier';
+                    editButton.addEventListener('click', () => {
+                        // Redirection vers la page de modification (non implémentée ici)
+                        alert('Fonctionnalité de modification à implémenter.');
+                    });
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Supprimer';
+                    deleteButton.addEventListener('click', () => {
+                        const confirmDelete = confirm('Voulez-vous vraiment supprimer ce poste ?');
+                        if (confirmDelete) {
+                            deletePost(post.id);
+                            window.location.reload();
+                        }
+                    });
+
+                    actions.appendChild(editButton);
+                    actions.appendChild(deleteButton);
+
+                    postElement.appendChild(title);
+                    postElement.appendChild(content);
+                    postElement.appendChild(actions);
+
+                    postsList.appendChild(postElement);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

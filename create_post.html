@@ -1,0 +1,67 @@
+<!-- create_post.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Poste - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Formulaire de création de poste -->
+    <main>
+        <h1>Créer un Nouveau Poste</h1>
+        <form id="create-post-form">
+            <label for="title">Titre</label>
+            <input type="text" id="title" required>
+
+            <label for="content">Contenu</label>
+            <textarea id="content" rows="10" required></textarea>
+
+            <button type="submit">Publier</button>
+        </form>
+        <p id="message"></p>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/posts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!currentUserId) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const form = document.getElementById('create-post-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('title').value.trim();
+                const content = document.getElementById('content').value.trim();
+
+                const message = document.getElementById('message');
+
+                if (title && content) {
+                    const newPost = createPost(title, content);
+                    if (newPost) {
+                        message.textContent = 'Poste créé avec succès. Redirection...';
+                        setTimeout(() => {
+                            window.location.href = `post.html?id=${newPost.id}`;
+                        }, 2000);
+                    } else {
+                        message.textContent = 'Erreur lors de la création du poste.';
+                    }
+                } else {
+                    message.textContent = 'Veuillez remplir tous les champs.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

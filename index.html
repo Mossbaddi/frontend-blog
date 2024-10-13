@@ -1,0 +1,73 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Liste des postes -->
+    <main>
+        <h1>Bienvenue sur le Blog</h1>
+        <section id="posts-list">
+            <!-- Les postes seront affichés ici -->
+        </section>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+	<script src="js/users.js"></script>
+    <script src="js/posts.js"></script>
+    <script>
+        // Affichage des postes
+		document.addEventListener('DOMContentLoaded', () => {
+			const postsList = document.getElementById('posts-list');
+			const posts = getAllPosts();
+		
+			if (posts.length === 0) {
+				postsList.innerHTML = '<p>Aucun poste disponible.</p>';
+			} else {
+				posts.forEach(post => {
+					const postElement = document.createElement('article');
+					postElement.className = 'post';
+		
+					const title = document.createElement('h2');
+					title.textContent = post.title;
+					title.addEventListener('click', () => {
+						window.location.href = `post.html?id=${post.id}`;
+					});
+		
+					const excerpt = document.createElement('p');
+					excerpt.textContent = post.content.substring(0, 100) + '...';
+		
+					// Récupérer l'auteur et vérifier s'il existe
+					const author = getUserById(post.authorId);
+					const meta = document.createElement('p');
+					meta.className = 'post-meta';
+		
+					// Vérifier si l'auteur est défini avant d'afficher les détails
+					if (author) {
+						meta.textContent = `Par ${author.username} le ${new Date(post.createdAt).toLocaleDateString()}`;
+					} else {
+						meta.textContent = `Auteur inconnu le ${new Date(post.createdAt).toLocaleDateString()}`;
+					}
+		
+					postElement.appendChild(title);
+					postElement.appendChild(excerpt);
+					postElement.appendChild(meta);
+		
+					postsList.appendChild(postElement);
+				});
+			}
+		});
+    </script>
+</body>
+</html>

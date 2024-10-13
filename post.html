@@ -1,0 +1,118 @@
+<!-- post.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du Poste - Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav id="nav">
+            <!-- Le menu sera généré dynamiquement par main.js -->
+        </nav>
+    </header>
+
+    <!-- Détails du poste -->
+    <main>
+        <section id="post-details">
+            <!-- Les détails du poste seront affichés ici -->
+        </section>
+
+        <!-- Commentaires -->
+        <section id="comments-section">
+            <h3>Commentaires</h3>
+            <div id="comments-list">
+                <!-- Les commentaires seront affichés ici -->
+            </div>
+
+            <!-- Formulaire pour ajouter un commentaire -->
+            <div id="add-comment-form">
+                <!-- Le formulaire sera affiché seulement si l'utilisateur est connecté -->
+            </div>
+        </section>
+    </main>
+
+    <script src="data/data.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/posts.js"></script>
+    <script src="js/comments.js"></script>
+    <script>
+        // Affichage du poste et des commentaires
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            const post = getPostById(postId);
+
+            if (!post) {
+                document.getElementById('post-details').innerHTML = '<p>Poste non trouvé.</p>';
+                return;
+            }
+
+            // Afficher les détails du poste
+            const postDetails = document.getElementById('post-details');
+            const title = document.createElement('h1');
+            title.textContent = post.title;
+
+            const content = document.createElement('p');
+            content.textContent = post.content;
+
+            const author = getUserById(post.authorId);
+            const meta = document.createElement('p');
+            meta.className = 'post-meta';
+            meta.textContent = `Par ${author.username} le ${new Date(post.createdAt).toLocaleDateString()}`;
+
+            postDetails.appendChild(title);
+            postDetails.appendChild(content);
+            postDetails.appendChild(meta);
+
+            // Afficher les commentaires
+            const commentsList = document.getElementById('comments-list');
+            const comments = getCommentsByPostId(postId);
+
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<p>Aucun commentaire pour ce poste.</p>';
+            } else {
+                comments.forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+
+                    const content = document.createElement('p');
+                    content.textContent = comment.content;
+
+                    const author = getUserById(comment.authorId);
+                    const meta = document.createElement('p');
+                    meta.className = 'comment-meta';
+                    meta.textContent = `Par ${author.username} le ${new Date(comment.createdAt).toLocaleDateString()}`;
+
+                    commentElement.appendChild(content);
+                    commentElement.appendChild(meta);
+
+                    commentsList.appendChild(commentElement);
+                });
+            }
+			currentUserId = localStorage.getItem('currentUserId');
+            // Formulaire pour ajouter un commentaire
+            if (currentUserId) {
+                const addCommentForm = document.getElementById('add-comment-form');
+                addCommentForm.innerHTML = `
+                    <h3>Ajouter un commentaire</h3>
+                    <form id="comment-form">
+                        <textarea id="comment-content" rows="4" placeholder="Votre commentaire"></textarea>
+                        <button type="submit">Envoyer</button>
+                    </form>
+                `;
+                document.getElementById('comment-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const content = document.getElementById('comment-content').value.trim();
+                    if (content) {
+                        addComment(postId, content);
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
